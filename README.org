@@ -1,0 +1,1 @@
+* This is my emacs config file, i will try to document everychange i make from this point on
