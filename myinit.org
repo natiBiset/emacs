@@ -249,5 +249,5 @@
            ("C-x C-g" . magit-status)))
 #+END_SRC
 
-* alarm
+
 
