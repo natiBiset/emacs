@@ -250,4 +250,61 @@
 #+END_SRC
 
 
+* projectile
+#+BEGIN_SRC emacs-lisp
 
+  (use-package projectile
+    :ensure t
+    :config
+    (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+      (projectile-mode +1))  
+
+#+END_SRC
+* lsp-mode
+#+begin_src emacs-lisp
+    ;	(defun efs/lsp-mode-setup ()
+  ;	  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  ;	  (lsp-headerline-breadcrumb-mode))
+
+
+    (use-package lsp-mode
+      :ensure t
+      :commands (lsp lsp-deferred)
+					    ;	:hook (lsp-mode . efs/lsp-mode-setup)
+      :init
+      (setq lsp-keymap-prefix "C-x l" )  ;; Or 'C-l', 's-l'
+      :config
+      (lsp-enable-which-key-integration t))
+  (setq lsp-enable-file-watchers t)
+    (use-package lsp-ui
+      :ensure t
+	    :hook (lsp-mode . lsp-ui-mode)
+	    :custom
+	    (lsp-ui-doc-position 'bottom))
+    (use-package lsp-treemacs
+      :ensure t
+      :after lsp)
+    (use-package lsp-ivy
+      :ensure t)
+#+end_src
+* python
+#+BEGIN_SRC emacs-lisp
+
+      (use-package lsp-pyright
+	  :ensure t
+	  :hook (python-mode . (lambda ()
+				 (require 'lsp-pyright)
+				 (lsp-deferred))))  ; or lsp-deferred
+
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode))
+  (setq lsp-enable-symbol-highlighting t)
+  (setq lsp-file-watch-threshold 2000)
+
+  (use-package direnv
+    :ensure t
+    :config
+    (direnv-mode))
+
+#+END_SRC
