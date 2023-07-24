@@ -1,10 +1,21 @@
 * basic
 #+begin_src emacs-lisp
-  (setq inhibit-startup-message t)
-  (fset 'yes-or-no-p 'y-or-n-p)
-  (global-set-key (kbd "<f5>") 'revert-buffer)
-  (tool-bar-mode -1)
-  (setq load-prefer-newer t)
+    (setq inhibit-startup-message t)
+    (fset 'yes-or-no-p 'y-or-n-p)
+    (global-set-key (kbd "<f5>") 'revert-buffer)
+    (tool-bar-mode -1)
+    (setq load-prefer-newer t)
+
+    (column-number-mode)
+  ;; Enable line numbers for some modes
+  (dolist (mode '(text-mode-hook
+		  prog-mode-hook
+		  conf-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 1))))
+  ;; Override some modes which derive from the above
+    (dolist (mode '(org-mode-hook))
+      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 #+end_src
 ** powerline
   #+begin_src emacs-lisp
@@ -132,7 +143,7 @@
     :ensure t
     :config
     (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 3)
+    (setq company-minimum-prefix-length 1)
     (global-company-mode t)
     (add-hook 'after-init-hook 'global-company-mode))
   (use-package company-box
@@ -248,7 +259,6 @@
     :bind (("C-x g" . magit-status)
            ("C-x C-g" . magit-status)))
 #+END_SRC
-
 
 * projectile
 #+BEGIN_SRC emacs-lisp
