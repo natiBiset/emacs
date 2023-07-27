@@ -1,21 +1,22 @@
+
 * basic
 #+begin_src emacs-lisp
-    (setq inhibit-startup-message t)
-    (fset 'yes-or-no-p 'y-or-n-p)
-    (global-set-key (kbd "<f5>") 'revert-buffer)
-    (tool-bar-mode -1)
-    (setq load-prefer-newer t)
+      (setq inhibit-startup-message t)
+      (fset 'yes-or-no-p 'y-or-n-p)
+      (global-set-key (kbd "<f5>") 'revert-buffer)
+      (tool-bar-mode -1)
+      (setq load-prefer-newer t)
 
-    (column-number-mode)
-  ;; Enable line numbers for some modes
-  (dolist (mode '(text-mode-hook
-		  prog-mode-hook
-		  conf-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 1))))
-  ;; Override some modes which derive from the above
-    (dolist (mode '(org-mode-hook))
-      (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
+      (column-number-mode)
+    ;; Enable line numbers for some modes
+    (dolist (mode '(text-mode-hook
+		    prog-mode-hook
+		    conf-mode-hook))
+      (add-hook mode (lambda () (display-line-numbers-mode 1))))
+    ;; Override some modes which derive from the above
+      (dolist (mode '(org-mode-hook))
+	(add-hook mode (lambda () (display-line-numbers-mode 0))))
+  (set-face-attribute 'region nil :background "#666" :foreground "#ffffff")
 #+end_src
 ** powerline
   #+begin_src emacs-lisp
@@ -62,7 +63,7 @@
 #+BEGIN_SRC emacs-lisp
     ;; TODO states
   (setq org-todo-keywords
-        '((sequence "SOMEDAY(s)" "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "VERIFYING(v!)"   "|" "DONE(d!)" "WONT-DO(w@/!)" )
+        '((sequence "SOMEDAY(s)" "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i!)"    "|" "DONE(d!)" "WONT-DO(w@/!)" )
           ))
 
   (setq org-todo-keyword-faces
@@ -125,6 +126,15 @@
          :empty-lines 0)))
 
   #+END_SRC
+
+** template
+#+begin_src emacs-lisp
+  (require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+#+end_src
 
 * undo-redo
  #+BEGIN_SRC emacs-lisp
@@ -280,6 +290,8 @@
     (use-package lsp-mode
       :ensure t
       :commands (lsp lsp-deferred)
+      :hook
+      (sh-mode . lsp-deferred)
 					    ;	:hook (lsp-mode . efs/lsp-mode-setup)
       :init
       (setq lsp-keymap-prefix "C-x l" )  ;; Or 'C-l', 's-l'
@@ -300,21 +312,57 @@
 * python
 #+BEGIN_SRC emacs-lisp
 
-      (use-package lsp-pyright
-	  :ensure t
-	  :hook (python-mode . (lambda ()
-				 (require 'lsp-pyright)
-				 (lsp-deferred))))  ; or lsp-deferred
+    (use-package lsp-pyright
+      :ensure t
+      :hook (python-mode . (lambda ()
+			     (require 'lsp-pyright)
+			     (lsp-deferred))))  ; or lsp-deferredc
 
-  (use-package flycheck
-    :ensure t
-    :init (global-flycheck-mode))
-  (setq lsp-enable-symbol-highlighting t)
-  (setq lsp-file-watch-threshold 2000)
+    (use-package flycheck
+      :ensure t
+      :init (global-flycheck-mode))
+    (setq lsp-enable-symbol-highlighting t)
+    (setq lsp-file-watch-threshold 2000)
 
-  (use-package direnv
+    (use-package envrc
+      :ensure t
+      :config
+      (envrc-global-mode))
+
+
+  (use-package rainbow-delimiters
     :ensure t
-    :config
-    (direnv-mode))
+    :hook (prog-mode . rainbow-delimiters-mode))
 
 #+END_SRC
+* lua
+#+begin_src emacs-lisp
+  (use-package lua-mode
+:ensure t)
+#+end_src
+* bash
+#+begin_src emacs-lisp
+
+#+end_src
+* typescript
+#+begin_src emacs-lisp
+(use-package js-mode
+  :hook (js-mode . lsp-deferred)
+  :config
+  (setq javascript-indent-level 2))
+#+end_src
+* fortran
+#+begin_src emacs-lisp
+  (use-package f90-mode
+   :hook (f90-mode . lsp-deferred)
+   )
+#+end_src
+* tramp
+#+begin_src emacs-lisp
+(setq remote-file-name-inhibit-cache nil)
+(setq vc-ignore-dir-regexp
+      (format "%s\\|%s"
+                    vc-ignore-dir-regexp
+                    tramp-file-name-regexp))
+(setq tramp-verbose 1)
+#+end_src
